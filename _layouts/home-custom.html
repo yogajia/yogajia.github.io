@@ -1,7 +1,3 @@
----
-layout: home-custom
----
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,12 +7,518 @@ layout: home-custom
 
   <!-- 复用 Chirpy 的样式 -->
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-</head>
-<body>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<!-- 你原 yoPages 首页内容，粘在这里 -->
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f0;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* 顶部导航 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #f5f5f0;
+            padding: 20px 0;
+            text-align: center;
+            z-index: 100;
+            border-bottom: 2px solid #000;
+        }
+
+        .nav-buttons {
+            display: inline-flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 10px 30px;
+            border: 2px solid #000;
+            border-radius: 25px;
+            background: transparent;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #000;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: #000;
+            color: #f5f5f0;
+        }
+
+        /* 主容器 */
+        .container {
+            margin-top: 80px;
+            padding: 40px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 头部标题 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            border-bottom: 3px solid #000;
+            padding-bottom: 5px;
+        }
+
+        .logo {
+            font-size: 100px;
+            font-weight: bold;
+            line-height: 0.8;
+            letter-spacing: -5px;
+            font-family: 'Comic Sans MS';
+        }
+
+        .year {
+            font-size: 100px;
+            font-weight: bold;
+            line-height: 0.8;
+            letter-spacing: 5px;
+            font-family: 'Comic Sans MS';
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            font-size: 24px;
+            letter-spacing: 2px;
+            font-family: Papyrus;
+        }
+
+        .copyright {
+            text-align: right;
+            font-size: 24px;
+            margin-top: 10px;
+            font-family: Papyrus;
+        }
+
+        /* 主要内容区 */
+        .main-content {
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 60px 0;
+        }
+
+        /* 荧光黄背景文字 */
+        .yellow-text {
+            position: fixed;
+            bottom: 80px;
+            width: 100%;
+            text-align: center;
+<!--            left: 100%;-->
+            transform: translateX(-50%);
+            font-size: 180px;
+            font-weight: bold;
+            color: #d4ff00;
+            opacity: 0.9;
+            z-index: 1;
+            letter-spacing: -10px;
+            line-height: 0.9;
+            user-select: none;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+        }
+
+
+        /* 卡片容器 */
+        .card-container {
+            position: relative;
+            z-index: 10;
+            perspective: 1000px;
+        }
+
+        .profile-card {
+            width: 600px;
+            height: 380px;
+            background: linear-gradient(135deg, #b8b8b8 0%, #d0d0d0 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-10px) rotateY(5deg);
+        }
+
+        .card-text {
+            flex: 1;
+            padding-right: 30px;
+        }
+
+        .card-name {
+            font-size: 72px;
+            font-weight: bold;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .card-info {
+            font-size: 15px;
+            line-height: 3.2;
+            margin-bottom: 10px;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 侧边装饰 */
+        .side-decoration {
+            position: absolute;
+            font-size: 32px;
+            font-weight: bold;
+            transform: rotate(-90deg);
+            left: 10px;
+            top: 50%;
+        }
+
+        /* 底部标签 */
+        .status-badge {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            background: #000;
+            color: #d4ff00;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #d4ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* 滚动文字 */
+        .scroll-text {
+            position: fixed;
+            bottom: 40px;
+            left: 45%;
+            text-align: center;
+            padding: center;
+            font-size: 18px;
+            letter-spacing: 3px;
+            z-index: 100;
+            animation: fadeInOut 3s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* BGM控制 */
+        .bgm-control {
+            position: fixed;
+            top: 90%;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .bgm-control:hover {
+            transform: scale(1.1);
+        }
+
+        .bgm-control svg {
+            width: 24px;
+            height: 24px;
+            fill: #d4ff00;
+        }
+
+        .bgm-control.paused {
+            background: #d4ff00;
+        }
+
+        .bgm-control.paused svg {
+            fill: #000;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .logo, .year {
+                font-size: 60px;
+            }
+
+            .side-decoration{
+                display: none;
+            }
+
+            .subtitle, .copyright {
+                font-size: 16px;
+            }
+
+            .yellow-text {
+                font-size: 80px;
+            }
+
+            .profile-card {
+                width: 90%;
+                height: auto;
+                flex-direction: column;
+                padding: 30px;
+            }
+
+            .card-name {
+                font-size: 48px;
+            }
+
+            .profile-image {
+                width: 100%;
+                height: 300px;
+                margin-top: 20px;
+            }
+
+            .scroll-text{
+                display: none;
+            }
+
+        }
+
+        @media(max-height: 500px){
+            .yellow-text{
+                display: none;
+            }
+
+            .scroll-text{
+                display: none;
+            }
+        }
+    </style>
+</head>
+  
+<body>
 <div id="home">
-  <!-- TODO: 粘贴 yoPages 的 body 内容 -->
+  <!-- 顶部导航 -->
+<nav class="top-nav">
+    <div class="nav-buttons">
+        <a href="" class="nav-btn">BLOGS</a>
+        <a href="" class="nav-btn">READING</a>
+        <a href="" class="nav-btn">PHOTO</a>
+        <a href="" class="nav-btn">ABOUT ME</a>
+    </div>
+</nav>
+
+<!-- 主容器 -->
+<div class="container">
+    <!-- 头部 -->
+    <header class="header">
+        <div>
+            <div class="logo">MYBLOG</div>
+            <!--            <hr/>-->
+            <div class="subtitle">WELCOME TO</div>
+        </div>
+        <div>
+            <div class="year" id="yearCopyrighted"></div>
+            <!--            <hr/>-->
+            <div class="copyright">COPYRIGHTED ©</div>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <!-- 装饰文字 -->
+        <div class="side-decoration" id="dateDisplay"></div>
+
+        <!-- 个人卡片 -->
+        <div class="card-container">
+            <div class="profile-card">
+                <div class="card-text">
+                    <div class="card-name">yojia</div>
+                    <div class="card-info">
+                        这是想写一段话<br>
+                        BUT，，，还没想要写哪些宏大叙事<br>
+                        让我好好考虑下🤔
+                    </div>
+                </div>
+                <div class="profile-image">
+                    <!-- 照片 -->
+                    <img src="/assets/img/thinking.jpg" alt="Profile Photo">
+                </div>
+            </div>
+        </div>
+
+        <!-- 荧光黄背景文字 -->
+        <div class="yellow-text">HAPPY DAY!</div>
+    </div>
+
+</div>
+
+<!-- 底部状态 -->
+<div class="status-badge">
+    <span class="status-dot"></span>
+    留言
+</div>
+
+<!--&lt;!&ndash; 滚动提示&ndash;&gt;-->
+<!--<div class="scroll-text">向下滚动 @ 探索更多...</div>-->
+
+<!-- BGM控制 -->
+<div class="bgm-control" id="bgmControl">
+    <svg id="playIcon" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z"/>
+    </svg>
+    <svg id="pauseIcon" viewBox="0 0 24 24" style="display: none;">
+        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+    </svg>
+</div>
+
+<!-- BGM音频 -->
+<audio id="bgm" loop>
+    <source src="/assets/music/beihai.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    // BGM控制
+    const bgm = document.getElementById('bgm');
+    const bgmControl = document.getElementById('bgmControl');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    let isPlaying = false;
+
+    function updateBGMButton() {
+        if (isPlaying) {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+            bgmControl.classList.remove('paused');
+        } else {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+            bgmControl.classList.add('paused');
+        }
+    }
+
+    bgmControl.addEventListener('click', () => {
+        if (isPlaying) {
+            bgm.pause();
+            isPlaying = false;
+        } else {
+            bgm.play();
+            isPlaying = true;
+        }
+        updateBGMButton();
+    });
+
+    // 自动播放
+    window.addEventListener('load', () => {
+        bgm.play().then(() => {
+            isPlaying = true;
+            updateBGMButton();
+        }).catch(() => {
+            console.log('等待用户交互');
+        });
+    });
+
+    // 用户交互后播放
+    document.addEventListener('click', function playOnce() {
+        if (!isPlaying) {
+            bgm.play();
+            isPlaying = true;
+            updateBGMButton();
+        }
+    }, { once: true });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // 卡片视差效果
+    const card = document.querySelector('.profile-card');
+    document.addEventListener('mousemove', (e) => {
+        const x = (window.innerWidth / 2 - e.clientX) / 50;
+        const y = (window.innerHeight / 2 - e.clientY) / 50;
+        card.style.transform = `translateY(-10px) rotateY(${x}deg) rotateX(${y}deg)`;
+    });
+
+    // 获取当前日期并格式化
+    function getCurrentDate() {
+        const now = new Date();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        return `${month}-${day}`;
+    }
+
+    // 更新侧边日期显示
+    function updateDateDisplay() {
+        const dateDisplay = document.getElementById('dateDisplay');
+        const currentDate = getCurrentDate();
+
+        dateDisplay.textContent = currentDate;
+
+        //获取年份
+        const now = new Date();
+        const year = now.getFullYear().toString().padStart(2, '0');
+        const yearDisplay = document.getElementById('yearCopyrighted');
+
+        yearDisplay.textContent = year;
+    }
+
+    // 页面加载时更新日期
+    document.addEventListener('DOMContentLoaded', updateDateDisplay);
+</script>
 </div>
 
 </body>
