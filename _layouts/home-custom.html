@@ -10,7 +10,341 @@ layout: none
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- 复用 Chirpy 的样式 -->
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <!-- <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">-->
+
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f0;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* 顶部导航 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #f5f5f0;
+            padding: 20px 0;
+            text-align: center;
+            z-index: 100;
+            border-bottom: 2px solid #000;
+        }
+
+        .nav-buttons {
+            display: inline-flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 10px 30px;
+            border: 2px solid #000;
+            border-radius: 25px;
+            background: transparent;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #000;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: #000;
+            color: #f5f5f0;
+        }
+
+        /* 主容器 */
+        .container {
+            margin-top: 80px;
+            padding: 40px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 头部标题 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            border-bottom: 3px solid #000;
+            padding-bottom: 5px;
+        }
+
+        .logo {
+            font-size: 100px;
+            font-weight: bold;
+            line-height: 0.8;
+            letter-spacing: -5px;
+            font-family: 'Comic Sans MS';
+        }
+
+        .year {
+            font-size: 100px;
+            font-weight: bold;
+            line-height: 0.8;
+            letter-spacing: 5px;
+            font-family: 'Comic Sans MS';
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            font-size: 24px;
+            letter-spacing: 2px;
+            font-family: Papyrus;
+        }
+
+        .copyright {
+            text-align: right;
+            font-size: 24px;
+            margin-top: 10px;
+            font-family: Papyrus;
+        }
+
+        /* 主要内容区 */
+        .main-content {
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 60px 0;
+        }
+
+        /* 荧光黄背景文字 */
+        .yellow-text {
+            position: fixed;
+            bottom: 80px;
+            width: 100%;
+            text-align: center;
+            transform: translateX(-50%);
+            font-size: 180px;
+            font-weight: bold;
+            color: #d4ff00;
+            opacity: 0.9;
+            z-index: 1;
+            letter-spacing: -10px;
+            line-height: 0.9;
+            user-select: none;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+        }
+
+
+        /* 卡片容器 */
+        .card-container {
+            position: relative;
+            z-index: 10;
+            perspective: 1000px;
+        }
+
+        .profile-card {
+            width: 600px;
+            height: 380px;
+            background: linear-gradient(135deg, #b8b8b8 0%, #d0d0d0 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-10px) rotateY(5deg);
+        }
+
+        .card-text {
+            flex: 1;
+            padding-right: 30px;
+        }
+
+        .card-name {
+            font-size: 72px;
+            font-weight: bold;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .card-info {
+            font-size: 15px;
+            line-height: 3.2;
+            margin-bottom: 10px;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 侧边装饰 */
+        .side-decoration {
+            position: absolute;
+            font-size: 32px;
+            font-weight: bold;
+            transform: rotate(-90deg);
+            left: 10px;
+            top: 50%;
+        }
+
+        /* 底部标签 */
+        .status-badge {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            background: #000;
+            color: #d4ff00;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #d4ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* 滚动文字 */
+        .scroll-text {
+            position: fixed;
+            bottom: 40px;
+            left: 45%;
+            text-align: center;
+            padding: center;
+            font-size: 18px;
+            letter-spacing: 3px;
+            z-index: 100;
+            animation: fadeInOut 3s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* BGM控制 */
+        .bgm-control {
+            position: fixed;
+            top: 90%;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .bgm-control:hover {
+            transform: scale(1.1);
+        }
+
+        .bgm-control svg {
+            width: 24px;
+            height: 24px;
+            fill: #d4ff00;
+        }
+
+        .bgm-control.paused {
+            background: #d4ff00;
+        }
+
+        .bgm-control.paused svg {
+            fill: #000;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .logo, .year {
+                font-size: 60px;
+            }
+
+            .side-decoration{
+                display: none;
+            }
+
+            .subtitle, .copyright {
+                font-size: 16px;
+            }
+
+            .yellow-text {
+                font-size: 80px;
+            }
+
+            .profile-card {
+                width: 90%;
+                height: auto;
+                flex-direction: column;
+                padding: 30px;
+            }
+
+            .card-name {
+                font-size: 48px;
+            }
+
+            .profile-image {
+                width: 100%;
+                height: 300px;
+                margin-top: 20px;
+            }
+
+            .scroll-text{
+                display: none;
+            }
+
+        }
+
+        @media(max-height: 500px){
+            .yellow-text{
+                display: none;
+            }
+
+            .scroll-text{
+                display: none;
+            }
+        }
+    </style>
 
 </head>
   
