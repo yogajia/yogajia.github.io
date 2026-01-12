@@ -16,6 +16,10 @@ timezone: Asia/Shanghai
 
 title: Yojia # the main title
 
+jekyll:
+  html_proofer:
+    enabled: false
+
 tagline: I want to build my personal blog site. # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
