@@ -1,0 +1,44 @@
+<!-- ===== Global BGM ===== -->
+<audio id="bgm" src="/assets/music/bgm.mp3" loop preload="auto"></audio>
+
+<div class="bgm-control" id="bgmControl" aria-label="Toggle background music">
+  <svg id="playIcon" viewBox="0 0 24 24">
+    <path d="M8 5v14l11-7z"/>
+  </svg>
+  <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none;">
+    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+  </svg>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const bgm = document.getElementById("bgm");
+  const control = document.getElementById("bgmControl");
+  const playIcon = document.getElementById("playIcon");
+  const pauseIcon = document.getElementById("pauseIcon");
+
+  if (!bgm || !control) return;
+
+  const isPlaying = localStorage.getItem("bgmPlaying") === "true";
+
+  if (isPlaying) {
+    bgm.play().catch(() => {});
+    playIcon.style.display = "none";
+    pauseIcon.style.display = "block";
+  }
+
+  control.addEventListener("click", () => {
+    if (bgm.paused) {
+      bgm.play();
+      localStorage.setItem("bgmPlaying", "true");
+      playIcon.style.display = "none";
+      pauseIcon.style.display = "block";
+    } else {
+      bgm.pause();
+      localStorage.setItem("bgmPlaying", "false");
+      playIcon.style.display = "block";
+      pauseIcon.style.display = "none";
+    }
+  });
+});
+</script>
