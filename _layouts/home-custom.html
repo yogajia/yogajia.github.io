@@ -5,9 +5,10 @@ layout: none
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<title>{{ site.title }}</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>{{ site.title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% include head.html %}
 <style>
 * {
 margin: 0;
@@ -349,13 +350,13 @@ display: none;
 <div id="home">
 <!-- 顶部导航 -->
 <nav class="top-nav">
-<div class="nav-buttons">
-<a href="/archives/" class="nav-btn">BLOG</a>
-<a href="/gallery/" class="nav-btn">PHOTO</a>
-<a href="/reading/" class="nav-btn">READING</a>
-<a href="/about/" class="nav-btn">ABOUT</a>
-</div>
-</nav>
+    <div class="nav-buttons">
+      <a href="/archives/" class="nav-btn">BLOG</a>
+      <a href="/gallery/" class="nav-btn">PHOTO</a>
+      <a href="/reading/" class="nav-btn">READING</a>
+      <a href="/about/" class="nav-btn">ABOUT</a>
+    </div>
+  </nav>
 
 <!-- 主容器 -->
 <div class="container">
@@ -411,8 +412,6 @@ BUT，，，还没想要写哪些宏大叙事<br>
 <!--&lt;!&ndash; 滚动提示&ndash;&gt;-->
 <!--<div class="scroll-text">向下滚动 @ 探索更多...</div>-->
 
-{% include footer.html %}
-
 <script>
 
 // 平滑滚动
@@ -462,5 +461,8 @@ document.addEventListener('DOMContentLoaded', updateDateDisplay);
 </script>
 </div>
 
+  <!-- 注入全站 BGM 控件 -->
+{% include bgm.html %}
+  
 </body>
 </html>
