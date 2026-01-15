@@ -1,7 +1,5 @@
 <!-- ===== Global BGM ===== -->
-<audio id="bgm" src="/assets/music/beihai.mp3" loop preload="auto"></audio>
-
-<div class="bgm-control" id="bgmControl" aria-label="Toggle background music">
+<div class="bgm-control paused" id="bgmControl">
   <svg id="playIcon" viewBox="0 0 24 24">
     <path d="M8 5v14l11-7z"/>
   </svg>
@@ -10,35 +8,48 @@
   </svg>
 </div>
 
+<audio id="bgm" loop preload="auto">
+  <source src="/assets/music/beihai.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const bgm = document.getElementById("bgm");
-  const control = document.getElementById("bgmControl");
+  const bgmControl = document.getElementById("bgmControl");
   const playIcon = document.getElementById("playIcon");
   const pauseIcon = document.getElementById("pauseIcon");
 
-  if (!bgm || !control) return;
+  if (!bgm || !bgmControl) return;
 
-  const isPlaying = localStorage.getItem("bgmPlaying") === "true";
+  let isPlaying = localStorage.getItem("bgmPlaying") === "true";
+
+  function updateUI() {
+    if (isPlaying) {
+      playIcon.style.display = "none";
+      pauseIcon.style.display = "block";
+      bgmControl.classList.remove("paused");
+    } else {
+      playIcon.style.display = "block";
+      pauseIcon.style.display = "none";
+      bgmControl.classList.add("paused");
+    }
+  }
 
   if (isPlaying) {
     bgm.play().catch(() => {});
-    playIcon.style.display = "none";
-    pauseIcon.style.display = "block";
   }
+  updateUI();
 
-  control.addEventListener("click", () => {
+  bgmControl.addEventListener("click", () => {
     if (bgm.paused) {
       bgm.play();
-      localStorage.setItem("bgmPlaying", "true");
-      playIcon.style.display = "none";
-      pauseIcon.style.display = "block";
+      isPlaying = true;
     } else {
       bgm.pause();
-      localStorage.setItem("bgmPlaying", "false");
-      playIcon.style.display = "block";
-      pauseIcon.style.display = "none";
+      isPlaying = false;
     }
+    localStorage.setItem("bgmPlaying", isPlaying);
+    updateUI();
   });
 });
 </script>
