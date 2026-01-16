@@ -1,0 +1,41 @@
+<!-- Global BGM -->
+<audio id="global-bgm" src="/assets/music/beihai.mp3" loop></audio>
+
+<div id="bgm-toggle" style="
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  background: #000;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+">
+  🎵 BGM
+</div>
+
+<script>
+  const bgm = document.getElementById('global-bgm');
+  const btn = document.getElementById('bgm-toggle');
+
+  let isPlaying = false;
+
+  btn.addEventListener('click', () => {
+    if (!isPlaying) {
+      bgm.play();
+      btn.innerText = '⏸ Pause';
+    } else {
+      bgm.pause();
+      btn.innerText = '🎵 BGM';
+    }
+    isPlaying = !isPlaying;
+  });
+
+  // 自动尝试播放（有些浏览器需要用户点击后才生效）
+  document.addEventListener('click', function autoPlayOnce() {
+    bgm.play().catch(() => {});
+    document.removeEventListener('click', autoPlayOnce);
+  });
+</script>
