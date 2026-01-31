@@ -11,11 +11,13 @@
 {% include_cached css.html %}
 
 <!-- 🎵 Global BGM -->
-<audio id="global-bgm" src="/assets/music/beihai.mp3" loop></audio>
+<audio id="global-bgm" src="{{ '/assets/music/beihai.mp3' | relative_url }}" loop></audio>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const bgm = document.getElementById("global-bgm");
+    if (!bgm) return;
+
     let started = false;
 
     const tryPlay = () => {
