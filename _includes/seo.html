@@ -1,0 +1,17 @@
+{%- if page.title -%}
+<meta property="og:title" content="{{ page.title | escape }}">
+<meta name="twitter:title" content="{{ page.title | escape }}">
+{%- endif -%}
+
+{%- if page.description -%}
+<meta name="description" content="{{ page.description | escape }}">
+<meta property="og:description" content="{{ page.description | escape }}">
+<meta name="twitter:description" content="{{ page.description | escape }}">
+{%- endif -%}
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.title | escape }}">
+
+{%- if page.url -%}
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+{%- endif -%}
