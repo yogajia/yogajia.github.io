@@ -1,0 +1,32 @@
+{% include_cached origin-type.html %}
+{% include_cached lang.html %}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{{ page.title | default: site.title }}</title>
+
+{% include_cached seo.html %}
+{% include_cached favicons.html %}
+{% include_cached css.html %}
+
+<!-- 🎵 Global BGM -->
+<audio id="global-bgm" src="/assets/music/beihai.mp3" loop></audio>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const bgm = document.getElementById("global-bgm");
+    let started = false;
+
+    const tryPlay = () => {
+      if (!started) {
+        bgm.volume = 0.4;
+        bgm.play().then(() => {
+          started = true;
+        }).catch(() => {});
+      }
+    };
+
+    document.addEventListener("click", tryPlay, { once: true });
+  });
+</script>
