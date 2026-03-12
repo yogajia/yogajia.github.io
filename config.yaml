@@ -1,0 +1,114 @@
+baseurl: https://yogajia.github.io/
+languageCode: zh-cn
+title: YOGA'S_BLOG
+theme: hugo-theme-stack
+paginate: 10
+
+defaultContentLanguage: zh-cn
+hasCJKLanguage: true
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+params:
+  mainSections:
+    - post
+
+  author:
+    name: yojia
+    bio: 个人博客
+    avatar: img/avatar.png
+
+  article:
+    math: false
+    toc: true
+    readingTime: true
+    license:
+      enabled: false
+
+  comments:
+    enabled: true
+    provider: giscus
+    giscus:
+      repo: yogajia/yogajia.github.io
+      repoID: 待填写
+      category: Announcements
+      categoryID: 待填写
+      mapping: pathname
+      lightTheme: light
+      darkTheme: dark_dimmed
+      lang: zh-CN
+
+  widgets:
+    homepage:
+      - type: search
+      - type: archives
+        params:
+          limit: 5
+      - type: categories
+        params:
+          limit: 10
+      - type: tag-cloud
+        params:
+          limit: 20
+
+  colorScheme:
+    toggle: true
+    default: auto
+
+  imageProcessing:
+    cover:
+      enabled: true
+    content:
+      enabled: true
+
+menu:
+  main:
+    - name: 首页
+      url: /
+      weight: 1
+      params:
+        icon: home
+    - name: 归档
+      url: /archives/
+      weight: 2
+      params:
+        icon: archives
+    - name: 相册
+      url: /gallery/
+      weight: 3
+      params:
+        icon: photo
+    - name: 读书笔记
+      url: /categories/读书笔记/
+      weight: 4
+      params:
+        icon: book
+    - name: 学习笔记
+      url: /categories/学习笔记/
+      weight: 5
+      params:
+        icon: pencil
+    - name: 说说
+      url: /shuoshuo/
+      weight: 6
+      params:
+        icon: message
+    - name: 友链
+      url: /links/
+      weight: 7
+      params:
+        icon: link
+    - name: 关于
+      url: /about/
+      weight: 8
+      params:
+        icon: user
+
+taxonomies:
+  category: categories
+  tag: tags
+  series: series
