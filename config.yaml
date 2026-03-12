@@ -75,22 +75,22 @@ menu:
       url: /gallery/
       weight: 3
       params:
-        icon: photo
+        icon: categories
     - name: 读书笔记
       url: /categories/读书笔记/
       weight: 4
       params:
-        icon: book
+        icon: tag
     - name: 学习笔记
       url: /categories/学习笔记/
       weight: 5
       params:
-        icon: pencil
+        icon: hash
     - name: 说说
       url: /shuoshuo/
       weight: 6
       params:
-        icon: message
+        icon: messages
     - name: 友链
       url: /links/
       weight: 7
