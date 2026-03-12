@@ -107,8 +107,3 @@ menu:
       weight: 8
       params:
         icon: user
-
-taxonomies:
-  category: categories
-  tag: tags
-  series: series
