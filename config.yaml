@@ -72,7 +72,7 @@ menu:
       params:
         icon: archives
     - name: 相册
-      url: /gallery/
+      url: /page/gallery/
       weight: 3
       params:
         icon: categories
@@ -97,7 +97,7 @@ menu:
       params:
         icon: link
     - name: 关于
-      url: /about/
+      url: /page/about/
       weight: 8
       params:
         icon: user
