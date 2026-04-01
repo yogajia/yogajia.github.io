@@ -101,3 +101,13 @@ menu:
       weight: 8
       params:
         icon: user
+
+giscus:
+      repo: yogajia/yogajia.github.io
+      repoID: R_kgDORlPkaQ
+      category: Announcements
+      categoryID: DIC_kwDORlPkac4C5w6g
+      mapping: pathname
+      lightTheme: light
+      darkTheme: dark_dimmed
+      lang: zh-CN
