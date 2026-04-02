@@ -1,0 +1,26 @@
+<!-- APlayer 背景音乐播放器 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+
+<div id="aplayer"></div>
+<script>
+const ap = new APlayer({
+  container: document.getElementById('aplayer'),
+  fixed: true,
+  mini: true,
+  autoplay: false,
+  loop: 'all',
+  order: 'random',
+  volume: 0.4,
+  audio: [
+    {
+      name: '北海',
+      artist: '永动机',
+      url: '/music/beihai.mp3',
+    }
+  ]
+});
+</script>
+
+<!-- 不蒜子访问统计 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
