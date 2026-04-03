@@ -19,13 +19,12 @@ params:
   author:
     name: yojia
     bio: 个人博客
-    avatar: img/avatar.png
 
-sidebar:
-  avatar:
-    enabled: true
-    local: true
-    src: images/thinking.jpg
+  sidebar:
+    avatar:
+      enabled: true
+      local: true
+      src: images/thinking.jpg
 
   article:
     math: false
