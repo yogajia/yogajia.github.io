@@ -21,8 +21,7 @@ params:
     bio: 个人博客
 
   sidebar:
-    avatar:
-      src: images/thinking.jpg
+    avatar: images/thinking.jpg
 
   article:
     math: false
