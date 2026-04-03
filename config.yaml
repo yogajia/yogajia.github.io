@@ -22,8 +22,6 @@ params:
 
   sidebar:
     avatar:
-      enabled: true
-      local: true
       src: images/thinking.jpg
 
   article:
