@@ -76,17 +76,17 @@ menu:
       url: /page/gallery/
       weight: 3
       params:
-        icon: categories
-    - name: 读书笔记
+        icon: assets/icons/album.svg
+    - name: 阅读
       url: /categories/读书笔记/
       weight: 4
       params:
         icon: tag
-    - name: 学习笔记
+    - name: 学习
       url: /categories/学习笔记/
       weight: 5
       params:
-        icon: hash
+        icon: assets/icons/school.svg
     - name: 说说
       url: /shuoshuo/
       weight: 6
