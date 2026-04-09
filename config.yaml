@@ -76,7 +76,7 @@ menu:
       url: /page/gallery/
       weight: 3
       params:
-        icon: assets/icons/album.svg
+        icon: album
     - name: 阅读
       url: /categories/读书笔记/
       weight: 4
@@ -86,7 +86,7 @@ menu:
       url: /categories/学习笔记/
       weight: 5
       params:
-        icon: assets/icons/school.svg
+        icon: school
     - name: 说说
       url: /shuoshuo/
       weight: 6
