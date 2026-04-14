@@ -1,5 +1,5 @@
 ---
-title: 归档
+title: 博客
 layout: archives
 outputs:
   - html
