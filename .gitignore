@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+public/
+resources/
+.hugo_cache/
+.hugo_build.lock
+assets/jsconfig.json

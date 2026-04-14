@@ -1,27 +1,178 @@
 <!-- APlayer 背景音乐播放器 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
-
-<div id="aplayer"></div>
+<script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
 <script>
-const ap = new APlayer({
-  container: document.getElementById('aplayer'),
-  fixed: true,
-  mini: true,
-  autoplay: false,
-  loop: 'all',
-  order: 'random',
-  volume: 0.4,
-  audio: [
+window.addEventListener('DOMContentLoaded', function () {
+  if (typeof APlayer === 'undefined') return;
+  const storageKey = 'blog-aplayer-state-v1';
+  const tracks = [
     {
-      name: '歌曲名1',
-      artist: '歌手名',
-      url: '/music/song1.mp3',
-      cover: '/music/cover.jpg'
+      name: '北海',
+      artist: '永动机',
+      url: '/music/beihai.mp3',
+      cover: '/music/albumcover/beihai.jpg'
+    },
+    {
+      name: '我还年轻',
+      artist: '老王乐队',
+      url: '/music/young.mp3',
+      cover: '/music/albumcover/young.jpg'
     }
-  ]
+  ];
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveState(player) {
+    try {
+      const state = {
+        index: player.list.index || 0,
+        currentTime: player.audio.currentTime || 0,
+        wasPlaying: !player.audio.paused
+      };
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    } catch (error) {
+      // Ignore storage errors silently to avoid breaking page rendering.
+    }
+  }
+
+  const container = document.createElement('div');
+  container.id = 'aplayer';
+  document.body.appendChild(container);
+
+  const state = loadState();
+  const initialIndex = state && Number.isInteger(state.index) ? state.index : 0;
+  const initialTime = state && typeof state.currentTime === 'number' ? state.currentTime : 0;
+  const shouldResumePlay = Boolean(state && state.wasPlaying);
+
+  const ap = new APlayer({
+    container: container,
+    fixed: true,
+    mini: true,
+    autoplay: shouldResumePlay,
+    loop: 'all',
+    order: 'random',
+    volume: 0.4,
+    audio: tracks
+  });
+
+  if (initialIndex >= 0 && initialIndex < tracks.length && initialIndex !== ap.list.index) {
+    ap.list.switch(initialIndex);
+  }
+
+  ap.on('canplay', function () {
+    if (initialTime > 0) {
+      ap.seek(initialTime);
+    }
+    if (shouldResumePlay) {
+      ap.play();
+    }
+  });
+
+  window.addEventListener('beforeunload', function () {
+    saveState(ap);
+  });
+
+  ap.on('play', function () { saveState(ap); });
+  ap.on('pause', function () { saveState(ap); });
+  ap.on('listswitch', function () { saveState(ap); });
+  ap.on('ended', function () { saveState(ap); });
+  setInterval(function () { saveState(ap); }, 1000);
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  const containerSelector = '[data-pjax-container]';
+  const mainContainer = document.querySelector(containerSelector);
+  if (!mainContainer) return;
+
+  let navigating = false;
+
+  function isInternalLink(link) {
+    if (!link || !link.href) return false;
+    const url = new URL(link.href, window.location.origin);
+    if (url.origin !== window.location.origin) return false;
+    if (url.hash && url.pathname === window.location.pathname) return false;
+    return !link.hasAttribute('download') && !link.target;
+  }
+
+  function runInlineScripts(scope) {
+    const scripts = scope.querySelectorAll('script');
+    scripts.forEach(function (oldScript) {
+      const newScript = document.createElement('script');
+      for (const attr of oldScript.attributes) {
+        newScript.setAttribute(attr.name, attr.value);
+      }
+      newScript.textContent = oldScript.textContent;
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+  }
+
+  async function navigate(url, push) {
+    if (navigating) return;
+    navigating = true;
+    try {
+      const response = await fetch(url, { headers: { 'X-Requested-With': 'pjax' } });
+      if (!response.ok) {
+        window.location.href = url;
+        return;
+      }
+
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const nextContainer = doc.querySelector(containerSelector);
+      if (!nextContainer) {
+        window.location.href = url;
+        return;
+      }
+
+      mainContainer.innerHTML = nextContainer.innerHTML;
+      document.title = doc.title || document.title;
+
+      const canonical = doc.querySelector('link[rel="canonical"]');
+      const currentCanonical = document.querySelector('link[rel="canonical"]');
+      if (canonical && currentCanonical) {
+        currentCanonical.href = canonical.href;
+      }
+
+      if (push) {
+        history.pushState({ url: url }, '', url);
+      }
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      runInlineScripts(mainContainer);
+      document.dispatchEvent(new CustomEvent('pjax:complete'));
+    } catch (error) {
+      window.location.href = url;
+    } finally {
+      navigating = false;
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    if (event.defaultPrevented) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    const link = event.target.closest('a');
+    if (!isInternalLink(link)) return;
+
+    event.preventDefault();
+    navigate(link.href, true);
+  });
+
+  window.addEventListener('popstate', function () {
+    navigate(window.location.href, false);
+  });
 });
 </script>
 
 <!-- 不蒜子访问统计 -->
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
