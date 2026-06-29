@@ -13,6 +13,8 @@ outputs:
     - JSON
 
 params:
+  favicon: images/favicon.png
+
   description: yojia 的个人博客，记录学习与阅读。
   mainSections:
     - post
@@ -70,7 +72,7 @@ menu:
       params:
         icon: home
     - name: 博客
-      url: /archives/
+      url: /page/archives/
       weight: 2
       params:
         icon: archives
