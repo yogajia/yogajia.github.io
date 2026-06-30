@@ -5,6 +5,8 @@ date: 2026-06-30
 draft: false
 categories:
   - 学习
+  - 教程
+  - 技能
 tags:
   - Hugo
   - GitHub Pages
