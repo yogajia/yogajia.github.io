@@ -1,38 +1,48 @@
 baseurl: https://yogajia.github.io/
 languageCode: zh-cn
-title: Yoga's blog! :)
+title: "Yoga's blog! :)"
 theme: hugo-theme-stack
 paginate: 10
+
+enableEmoji: true
+enableRobotsTXT: true
 
 defaultContentLanguage: zh-cn
 hasCJKLanguage: true
 
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
 outputs:
   home:
     - RSS
-    - JSON
+#    - JSON
 
 params:
   favicon: images/favicon.png
 
-  description: yojia 的个人博客，记录学习与阅读。
+  description: yojia 的个人博客，记录学习、生活、阅读与碎碎念。
   mainSections:
     - post
 
   author:
     name: yojia
-    bio: 个人博客
+    bio: 勇敢一点，勇往直前。
 
   sidebar:
     avatar: images/thinking.jpg
-    subtitle: loading...
+    subtitle: 勇敢一点，勇往直前。
+    emoji: 🫵🏼
 
   article:
     math: false
     toc: true
     readingTime: true
     license:
-      enabled: false
+      enabled: true
+      default: "本文采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可协议，转载请注明出处。"
 
   comments:
     enabled: true
@@ -53,6 +63,10 @@ params:
       - type: archives
         params:
           limit: 5
+      - type: categories
+      - type: tag-cloud
+    page:
+      - type: toc
 
   colorScheme:
     toggle: true
@@ -64,25 +78,52 @@ params:
     content:
       enabled: true
 
+  footer:
+    since: 2026
+    customText: ""
+
+  music:
+    enabled: false
+
 menu:
   main:
     - name: 首页
       url: /
-      weight: 1
+      weight: 10
       params:
         icon: home
-    - name: 博客
+    - name: 归档
       url: /page/archives/
-      weight: 2
+      weight: 20
       params:
         icon: archives
+    - name: 分类
+      url: /categories/
+      weight: 30
+      params:
+        icon: categories
+    - name: 标签
+      url: /tags/
+      weight: 40
+      params:
+        icon: tag
     - name: 相册
       url: /page/gallery/
-      weight: 3
+      weight: 50
       params:
         icon: album
+    - name: 友链
+      url: /page/friends/
+      weight: 60
+      params:
+        icon: link
+    - name: 碎碎念
+      url: /moments/
+      weight: 70
+      params:
+        icon: messages
     - name: 关于
       url: /page/about/
-      weight: 4
+      weight: 80
       params:
         icon: user

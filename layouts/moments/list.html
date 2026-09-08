@@ -1,0 +1,78 @@
+{{ define "main" }}
+<header>
+    <h3 class="section-title">{{ .Title }}</h3>
+    <div class="section-card">
+        <div class="section-details">
+            <h1 class="section-term">{{ .Title }}</h1>
+            {{ with .Params.description }}
+                <h2 class="section-description">{{ . }}</h2>
+            {{ end }}
+            <h3 class="section-count">{{ len .Pages }} 条瞬间</h3>
+        </div>
+    </div>
+</header>
+
+<div class="moments-timeline">
+    {{ range .Pages }}
+        <article class="moment-item">
+            <time class="moment-time" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">
+                {{ .Date.Format "2006-01-02 15:04" }}
+            </time>
+            <div class="moment-content">
+                {{ .Content }}
+            </div>
+        </article>
+    {{ end }}
+</div>
+
+<style>
+    .moments-timeline {
+        margin-top: 24px;
+        position: relative;
+        padding-left: 20px;
+    }
+    .moments-timeline::before {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--card-text-color-tertiary);
+        opacity: 0.3;
+    }
+    .moment-item {
+        position: relative;
+        margin-bottom: 20px;
+        padding: 16px;
+        border-radius: var(--card-border-radius);
+        background: var(--card-background);
+        box-shadow: var(--shadow-l1);
+    }
+    .moment-item::before {
+        content: "";
+        position: absolute;
+        left: -19px;
+        top: 24px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent-color);
+    }
+    .moment-time {
+        display: block;
+        font-size: 0.8em;
+        color: var(--card-text-color-tertiary);
+        margin-bottom: 8px;
+    }
+    .moment-content {
+        color: var(--card-text-color-main);
+        line-height: 1.7;
+    }
+    .moment-content p:last-child {
+        margin-bottom: 0;
+    }
+</style>
+
+{{ partialCached "footer/footer" . }}
+{{ end }}

@@ -1,0 +1,8 @@
+{{ if .Site.Params.music.enabled }}
+    {{ with site.Data.music }}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+        <script id="blog-music-data" type="application/json">{{ jsonify .playlist }}</script>
+    {{ end }}
+{{ end }}
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>

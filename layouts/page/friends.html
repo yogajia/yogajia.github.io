@@ -1,0 +1,80 @@
+{{ define "main" }}
+<header>
+    <h3 class="section-title">{{ .Title }}</h3>
+    <div class="section-card">
+        <div class="section-details">
+            <h1 class="section-term">{{ .Title }}</h1>
+            {{ with .Params.description }}
+                <h2 class="section-description">{{ . }}</h2>
+            {{ end }}
+        </div>
+    </div>
+</header>
+
+{{ if .Content }}
+    <section class="article-content">
+        {{ .Content }}
+    </section>
+{{ end }}
+
+<div class="friend-list">
+    {{ range site.Data.friends }}
+        <a href="{{ .url }}" target="_blank" rel="noopener" class="friend-card">
+            <img src="{{ .avatar }}" alt="{{ .name }}" loading="lazy">
+            <div class="friend-info">
+                <h3 class="friend-name">{{ .name }}</h3>
+                <p class="friend-bio">{{ .bio }}</p>
+            </div>
+        </a>
+    {{ end }}
+</div>
+
+<style>
+    .friend-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+    }
+    .friend-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        border-radius: var(--card-border-radius);
+        background: var(--card-background);
+        box-shadow: var(--shadow-l1);
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .friend-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-l2);
+    }
+    .friend-card img {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+    .friend-info {
+        min-width: 0;
+    }
+    .friend-name {
+        margin: 0 0 4px;
+        font-size: 1.1em;
+        color: var(--card-text-color-main);
+    }
+    .friend-bio {
+        margin: 0;
+        font-size: 0.85em;
+        color: var(--card-text-color-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+{{ partialCached "footer/footer" . }}
+{{ end }}

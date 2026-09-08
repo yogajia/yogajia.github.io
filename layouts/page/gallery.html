@@ -1,0 +1,54 @@
+{{ define "main" }}
+<header>
+    <h3 class="section-title">{{ .Title }}</h3>
+    <div class="section-card">
+        <div class="section-details">
+            <h1 class="section-term">{{ .Title }}</h1>
+            {{ with .Params.description }}
+                <h2 class="section-description">{{ . }}</h2>
+            {{ end }}
+        </div>
+    </div>
+</header>
+
+{{ if .Content }}
+    <section class="article-content">
+        {{ .Content }}
+    </section>
+{{ end }}
+
+<div class="gallery-grid">
+    {{ range .Resources.ByType "image" }}
+        {{ $thumb := .Fill "400x400 center" }}
+        <a href="{{ .RelPermalink }}" target="_blank" class="gallery-item" title="{{ .Name }}">
+            <img src="{{ $thumb.RelPermalink }}" alt="{{ .Name }}" loading="lazy" width="{{ $thumb.Width }}" height="{{ $thumb.Height }}">
+        </a>
+    {{ end }}
+</div>
+
+<style>
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+        margin-top: 24px;
+    }
+    .gallery-item {
+        overflow: hidden;
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        aspect-ratio: 1;
+    }
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
+</style>
+
+{{ partialCached "footer/footer" . }}
+{{ end }}
