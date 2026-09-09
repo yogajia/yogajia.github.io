@@ -8,6 +8,10 @@
                 <h2 class="section-description">{{ . }}</h2>
             {{ end }}
             <h3 class="section-count">{{ len .Pages }} 条瞬间</h3>
+            {{ with .Site.Params.moments.githubNewURL }}
+                <a class="moments-publish-link" href="{{ . }}" target="_blank" rel="noopener" aria-label="在 GitHub 发布一条碎碎念">在 GitHub 发布一条</a>
+            {{ end }}
+            <p class="moments-publish-note">登录拥有仓库写权限的 GitHub 账号后即可编辑并提交，访客没有发布权限。</p>
         </div>
     </div>
 </header>
@@ -71,6 +75,27 @@
     }
     .moment-content p:last-child {
         margin-bottom: 0;
+    }
+    .moments-publish-link {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #d4ff00;
+        color: #111;
+        font-size: 0.85em;
+        font-weight: 700;
+    }
+    .moments-publish-link:hover {
+        color: #111;
+        transform: translateY(-1px);
+    }
+    .moments-publish-note {
+        margin: 0;
+        color: var(--card-text-color-tertiary);
+        font-size: 0.8em;
+        line-height: 1.5;
     }
 </style>
 

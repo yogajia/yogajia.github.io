@@ -1,5 +1,6 @@
 ---
-title: 博客
+title: 归档
+description: 按时间回看写过的文章。
 layout: archives
 outputs:
   - html

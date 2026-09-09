@@ -18,7 +18,6 @@ markup:
 outputs:
   home:
     - RSS
-#    - JSON
 
 params:
   favicon: images/favicon.png
@@ -40,6 +39,8 @@ params:
     math: false
     toc: true
     readingTime: true
+    list:
+      showTags: true
     license:
       enabled: true
       default: "本文采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可协议，转载请注明出处。"
@@ -63,8 +64,9 @@ params:
       - type: archives
         params:
           limit: 5
-      - type: categories
       - type: tag-cloud
+        params:
+          limit: 12
     page:
       - type: toc
 
@@ -82,8 +84,11 @@ params:
     since: 2026
     customText: ""
 
-  music:
-    enabled: false
+  moments:
+    githubNewURL: https://github.com/yogajia/yogajia.github.io/new/main/content/moments
+
+taxonomies:
+  tag: tags
 
 menu:
   main:
@@ -97,33 +102,28 @@ menu:
       weight: 20
       params:
         icon: archives
-    - name: 分类
-      url: /categories/
-      weight: 30
-      params:
-        icon: categories
     - name: 标签
       url: /tags/
-      weight: 40
+      weight: 30
       params:
         icon: tag
     - name: 相册
       url: /page/gallery/
-      weight: 50
+      weight: 40
       params:
         icon: album
     - name: 友链
       url: /page/friends/
-      weight: 60
+      weight: 50
       params:
         icon: link
     - name: 碎碎念
       url: /moments/
-      weight: 70
+      weight: 60
       params:
         icon: messages
     - name: 关于
       url: /page/about/
-      weight: 80
+      weight: 70
       params:
         icon: user

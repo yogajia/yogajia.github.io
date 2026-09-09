@@ -1,0 +1,18 @@
+{{ define "main" }}
+    <header class="term-intro">
+        <h1>{{ .Title }}</h1>
+        <p>{{ len .Pages }} 篇内容</p>
+    </header>
+
+    <section class="article-list--compact">
+        {{ range .Pages.ByDate.Reverse }}
+            {{ partial "article-list/compact" . }}
+        {{ end }}
+    </section>
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}
+
+{{ define "right-sidebar" }}
+    {{ partial "sidebar/right.html" (dict "Context" . "Scope" "homepage") }}
+{{ end }}

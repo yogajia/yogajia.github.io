@@ -1,0 +1,38 @@
+{{ define "body-class" }}template-archives{{ end }}
+{{ define "main" }}
+    <header class="archive-intro">
+        <div class="archive-kicker">ARCHIVE / {{ len (partial "helper/pages.html" .Site.Home) }} POSTS</div>
+        <h1>{{ .Title }}</h1>
+        <p>{{ .Params.description | default "按时间回看写过的文章。" }}</p>
+    </header>
+
+    {{ $pages := partial "helper/pages.html" .Site.Home }}
+    {{ range $pages.GroupByDate "2006" }}
+        {{ $id := lower (replace .Key " " "-") }}
+        <section class="archive-year" id="{{ $id }}">
+            <h2 class="archive-year-heading">
+                <a href="{{ $.RelPermalink }}#{{ $id }}">{{ .Key }}</a>
+                <span class="archive-year-count">{{ len .Pages }} 篇</span>
+            </h2>
+            <div class="archive-entries">
+                {{ range .Pages.ByDate.Reverse }}
+                    <article class="archive-entry">
+                        <time class="archive-entry-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "01-02" }}</time>
+                        <div class="archive-entry-main">
+                            <a class="archive-entry-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                            {{ with .Params.description }}<p class="archive-entry-description">{{ . }}</p>{{ end }}
+                            <div class="archive-entry-meta">
+                                {{ if .ReadingTime }}<span>{{ .ReadingTime }} 分钟阅读</span>{{ end }}
+                                {{ range first 5 (.GetTerms "tags") }}
+                                    <a class="archive-entry-tag" href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </article>
+                {{ end }}
+            </div>
+        </section>
+    {{ end }}
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}

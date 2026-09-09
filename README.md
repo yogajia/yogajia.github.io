@@ -22,8 +22,7 @@
 │       ├── study/       # 学习
 │       └── tech/        # 技术
 ├── data/
-│   ├── friends.yaml     # 友链数据
-│   └── music.yaml       # 背景音乐播放列表
+│   └── friends.yaml     # 友链数据
 ├── layouts/             # 自定义布局
 │   ├── moments/list.html
 │   ├── page/friends.html
@@ -59,10 +58,47 @@ hugo new content moments/hello.md
 # 编辑 data/friends.yaml，按现有示例添加
 ```
 
+## 标签规则
+
+现在只使用一套标签，不再区分“分类”和“标签”：
+
+- `tags` 既表示文章方向，也表示具体主题，例如 `技术`、`学习`、`Hugo`、`部署`。
+- 一篇文章建议使用 2—5 个标签；第一个可以写较大的方向，后面写具体技术或主题。
+- `content/post/tech/`、`content/post/reading/` 等目录只是文件整理方式，不会自动生成分类页面。
+- 标签名称尽量保持统一，例如始终使用 `GitHub Pages`，不要同时创建 `GitHubPages`。
+
+文章示例：
+
+```yaml
+tags:
+  - 技术
+  - Hugo
+  - GitHub Pages
+  - 部署
+```
+
+## 发布碎碎念
+
+碎碎念文件放在 `content/moments/`，适合记录短想法、当天状态和临时灵感。可以在本地创建：
+
+```bash
+hugo new content moments/today.md
+```
+
+编辑生成的 Markdown，把 `draft: true` 改成 `draft: false`，然后提交并推送：
+
+```bash
+git add content/moments/today.md
+git commit -m "新增碎碎念"
+git push origin main
+```
+
+碎碎念页面上的“在 GitHub 发布一条”按钮会打开仓库的新建文件页面。GitHub 会要求登录，只有拥有仓库写权限的账号才能直接提交；博客前端不保存 Token，也不会把编辑权限暴露给访客。
+
 ## 已启用功能
 
 - 自定义首页（`static/index.html`）
-- 分类 / 标签 / 归档
+- 标签索引 / 时间线归档
 - 全文搜索
 - Giscus 评论
 - 不蒜子访问统计

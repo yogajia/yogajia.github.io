@@ -1,8 +1,0 @@
-# 背景音乐播放列表
-# 将 enabled 改为 true 并在 playlist 中添加音频后，页面左下角会出现播放器。
-enabled: false
-playlist:
-  - name: 示例音乐
-    artist: 示例艺术家
-    url: /music/example.mp3
-    cover: /images/thinking.jpg

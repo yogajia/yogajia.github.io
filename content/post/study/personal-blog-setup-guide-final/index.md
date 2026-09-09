@@ -1,17 +1,13 @@
 ---
 title: "个人博客搭建完整方案文档"
-description: "面向 macOS 用户的完整 Hugo + Stack 主题博客搭建指南，涵盖部署、评论、图床、音乐播放器等"
+description: "面向 macOS 用户的 Hugo + Stack 主题博客搭建指南，涵盖部署、评论、图床与日常写作"
 date: 2026-06-30
 draft: false
-categories:
-  - 学习
-  - 教程
-  - 技能
 tags:
+  - 学习
   - Hugo
   - GitHub Pages
   - 博客搭建
-  - Stack主题
 ---
 # 个人博客搭建完整方案文档（最终版）
 
@@ -30,19 +26,17 @@ tags:
 | 代码托管 + 网站托管 | GitHub Pages | 访问地址：`https://用户名.github.io` |
 | 自动部署 | GitHub Actions | 推送代码后自动构建发布 |
 | 评论系统 | Giscus | 基于 GitHub Discussions，免费 |
-| 背景音乐 | 本地 APlayer | 音频文件自己托管，稳定不受版权限制 |
 | 图片存储 | Cloudflare R2 + PicGo | 免费 10GB，防止仓库臃肿 |
 | 访问统计 | 不蒜子（Busuanzi） | 无需注册，两行代码接入 |
 
 ### 网站功能清单
 - 文章发布（Markdown 写作）
-- 标签（Tags）与分类（Categories）管理
+- 标签管理（统一的主题索引）
 - 相册 Gallery 页面
 - 读书笔记 / 学习笔记专栏
 - 时间轴归档页面
 - 标签云
 - 全文搜索
-- 背景音乐播放器（悬浮固定组件）
 - 评论与留言功能（Giscus）
 - 说说 / 碎碎念（短内容记录）
 - 友情链接页面
@@ -209,12 +203,9 @@ params:
       - type: archives
         params:
           limit: 5
-      - type: categories
-        params:
-          limit: 10
       - type: tag-cloud
         params:
-          limit: 20
+          limit: 12
 
   # 色彩主题
   colorScheme:
@@ -228,56 +219,51 @@ params:
     content:
       enabled: true
 
+# 分类法：只保留标签，避免"分类 + 标签"双重体系
+taxonomies:
+  tag: tags
+
 # 菜单
 menu:
   main:
     - name: 首页
       url: /
-      weight: 1
+      weight: 10
       params:
         icon: home
     - name: 归档
-      url: /archives/
-      weight: 2
+      url: /page/archives/
+      weight: 20
       params:
         icon: archives
+    - name: 标签
+      url: /tags/
+      weight: 30
+      params:
+        icon: tag
     - name: 相册
-      url: /gallery/
-      weight: 3
+      url: /page/gallery/
+      weight: 40
       params:
-        icon: photo
-    - name: 读书笔记
-      url: /categories/读书笔记/
-      weight: 4
-      params:
-        icon: book
-    - name: 学习笔记
-      url: /categories/学习笔记/
-      weight: 5
-      params:
-        icon: pencil
-    - name: 说说
-      url: /shuoshuo/
-      weight: 6
-      params:
-        icon: message
+        icon: album
     - name: 友链
-      url: /links/
-      weight: 7
+      url: /page/friends/
+      weight: 50
       params:
         icon: link
+    - name: 碎碎念
+      url: /moments/
+      weight: 60
+      params:
+        icon: messages
     - name: 关于
-      url: /about/
-      weight: 8
+      url: /page/about/
+      weight: 70
       params:
         icon: user
-
-# 分类法
-taxonomies:
-  category: categories
-  tag: tags
-  series: series
 ```
+
+> **为什么没有"分类"？** 分类（categories）和标签（tags）功能高度重叠，双重体系容易混乱。本站只用标签：每篇文章打 1 个栏目级标签（技术 / 学习 / 读书 / 生活 / 娱乐）+ 1~3 个主题关键词标签（如 Hugo、Git）。文章按栏目放进 `content/post/` 的子目录，仅作文件整理，不参与 URL 和索引。
 
 ---
 
@@ -300,10 +286,16 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -315,21 +307,30 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
-          hugo-version: '0.124.0'    # 必须与本地版本一致
+          hugo-version: '0.157.0'    # 与本地版本保持一致
           extended: true             # 必须开启
 
       - name: Build
-        run: hugo --minify
+        run: hugo --gc --minify
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          cname: ""                  # 无自定义域名留空
+          path: ./public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
-⚠️ `hugo-version` 的值必须与本地 `hugo version` 输出的版本号一致。
+⚠️ `hugo-version` 的值必须与本地 `hugo version` 输出的版本号一致。该工作流使用官方 `actions/deploy-pages` 直接发布构建产物，不再需要 `gh-pages` 分支。
 
 ---
 
@@ -337,35 +338,30 @@ jobs:
 
 ```
 content/
-├── post/                      # 博客文章（主要内容）
-│   ├── 我的第一篇文章/
-│   │   ├── index.md
-│   │   └── cover.jpg          # 封面图（通过 PicGo 上传到 R2 后粘贴链接）
-│   ├── 读书笔记-活着/
-│   │   ├── index.md
-│   │   └── cover.jpg
-│   └── 学习笔记-Git基础/
-│       └── index.md
-├── gallery/                   # 相册页面
-│   └── index.md
-├── shuoshuo/                  # 说说/碎碎念
-│   └── index.md
-├── about/                     # 关于页面
-│   └── index.md
-└── links/                     # 友情链接
-    └── index.md
+├── post/                      # 博客文章（子目录仅作文件整理，索引靠标签）
+│   ├── tech/                  # 技术
+│   ├── study/                 # 学习笔记
+│   ├── reading/               # 读书笔记
+│   ├── life/                  # 生活随笔
+│   └── enjoyment/             # 兴趣娱乐
+├── moments/                   # 碎碎念（一条一个 .md 文件）
+│   └── 2026-03-01.md
+└── page/                      # 独立页面
+    ├── about/                 # 关于
+    ├── archives/              # 归档（时间轴）
+    ├── friends/               # 友链（数据在 data/friends.yaml）
+    ├── gallery/               # 相册（图片放进目录即自动成网格）
+    └── search/                # 搜索
 ```
 
 ### 静态资源目录
 
 ```
 static/
-├── img/
-│   └── avatar.png             # 头像文件（放这里）
-├── music/
-│   ├── song1.mp3              # 本地音频文件
-│   └── cover1.jpg             # 音频封面图
-└── favicon.ico                # 网站图标
+├── images/
+│   ├── favicon.png            # 网站图标
+│   └── thinking.jpg           # 头像
+└── index.html                 # 自定义首页
 ```
 
 ---
@@ -381,50 +377,41 @@ static/
 title: "文章标题"
 description: "文章简介，显示在列表页"
 date: 2026-02-28T10:00:00+08:00
-lastmod: 2026-02-28T10:00:00+08:00
 draft: false
-categories:
-  - 读书笔记
 tags:
-  - 标签1
-  - 标签2
+  - 技术        # 第 1 个标签写栏目：技术 / 学习 / 读书 / 生活 / 娱乐
+  - Hugo        # 后面跟 1~3 个主题关键词
+  - Git
 image: https://你的R2域名/images/cover.jpg   # 封面图使用 R2 链接
 ---
 
 正文从这里开始...
 ```
 
-**相册文章：**
+**标签使用规则：**
+
+| 层级 | 作用 | 示例 | 数量 |
+|------|------|------|------|
+| 栏目标签 | 对应 `content/post/` 的子目录，标明文章属于哪个大类 | 技术、学习、读书、生活、娱乐 | 每篇 1 个 |
+| 主题标签 | 描述文章讲了什么，方便同主题聚合 | Hugo、Git、活着、旅行 | 每篇 1~3 个 |
+
+新起主题标签前先到 `/tags/` 页面看看有没有含义相近的旧标签，能复用就复用，避免"Git / git / Git基础"这类碎片化。
+
+**相册：** 不需要写文章，把图片文件直接放进 `content/page/gallery/` 目录，相册页会自动生成网格并支持点击看大图。
+
+**碎碎念：**
 
 ```yaml
 ---
-title: "2026年春天"
+title: ""
 date: 2026-03-01T10:00:00+08:00
 draft: false
-categories:
-  - 相册
-tags:
-  - 2026
-  - 春天
----
-
-![照片描述](https://你的R2域名/images/photo1.jpg)
-![照片描述](https://你的R2域名/images/photo2.jpg)
-```
-
-**说说（碎碎念）：**
-
-```yaml
----
-title: "2026-03-01"
-date: 2026-03-01T10:00:00+08:00
-draft: false
-categories:
-  - 说说
 ---
 
 今天读完了《活着》，心情很复杂...
 ```
+
+碎碎念不需要标题和标签，一条一个文件，放在 `content/moments/` 下（建议以日期命名，如 `2026-03-01.md`）。除了本地写完 push，也可以点击碎碎念页面顶部的"在 GitHub 发布一条"按钮，直接在 GitHub 网页端新建文件并提交——只有拥有仓库写权限的账号（也就是你自己）才能提交，提交后 Actions 自动构建发布。
 
 ### 7.2 草稿管理
 
@@ -435,8 +422,11 @@ hugo server -D
 # 本地预览（不含草稿，与线上一致）
 hugo server
 
-# 新建文章
-hugo new post/文章标题/index.md
+# 新建文章（archetypes 模板会自动填好 front matter）
+hugo new post/tech/文章标题/index.md
+
+# 新建一条碎碎念
+hugo new moments/2026-03-01.md
 ```
 
 ---
@@ -461,93 +451,37 @@ hugo new post/文章标题/index.md
 
 ---
 
-## 九、APlayer 背景音乐配置
+## 九、不蒜子访问统计配置
 
-### 9.1 准备音频文件
-
-将 `.mp3` 音频文件和封面图放入 `static/music/` 目录：
-
-```
-static/music/
-├── song1.mp3
-├── song2.mp3
-└── cover.jpg
-```
-
-### 9.2 注入播放器代码
-
-创建文件 `layouts/partials/custom/head.html`（目录不存在则新建）：
+创建文件 `layouts/_partials/head/custom.html`（目录不存在则新建），加入统计脚本：
 
 ```html
-<!-- APlayer 背景音乐播放器 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
-
-<div id="aplayer"></div>
-<script>
-const ap = new APlayer({
-  container: document.getElementById('aplayer'),
-  fixed: true,        // 固定在页面底部
-  mini: true,         // 默认迷你模式
-  autoplay: false,    // 默认不自动播放（部分浏览器会拦截自动播放）
-  loop: 'all',        // 循环播放
-  order: 'random',    // 随机播放
-  volume: 0.4,
-  audio: [
-    {
-      name: '歌曲名1',
-      artist: '歌手名',
-      url: '/music/song1.mp3',
-      cover: '/music/cover.jpg'
-    },
-    {
-      name: '歌曲名2',
-      artist: '歌手名',
-      url: '/music/song2.mp3',
-      cover: '/music/cover.jpg'
-    }
-  ]
-});
-</script>
-```
-
----
-
-## 十、不蒜子访问统计配置
-
-在 `layouts/partials/custom/head.html` 中追加以下代码（紧接在 APlayer 代码后面）：
-
-```html
-<!-- 不蒜子访问统计 -->
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 ```
 
-在文章模板中需要显示阅读量的位置（Stack 主题通常在 `layouts/partials/article/meta.html`）添加：
+创建文件 `layouts/_partials/footer/custom.html`，在页脚展示全站统计：
 
 ```html
-<span>
-  阅读量：<span id="busuanzi_value_page_pv"></span> 次
-</span>
+<div style="text-align: center; font-size: 0.85em; color: #999; margin-top: 10px;">
+  本站总访问量 <span id="busuanzi_value_site_pv"></span> 次 &nbsp;|&nbsp;
+  总访客数 <span id="busuanzi_value_site_uv"></span> 人
+</div>
 ```
 
-在页脚添加全站统计：
-
-```html
-<span>本站总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
-```
+> 注意：Hugo 0.146+ 的自定义模板目录是 `layouts/_partials/`（带下划线），旧教程里的 `layouts/partials/` 路径已失效。
 
 ---
 
-## 十一、Cloudflare R2 图床配置
+## 十、Cloudflare R2 图床配置
 
-### 11.1 开通 R2
+### 10.1 开通 R2
 
 1. 登录 https://cloudflare.com，进入 "R2 Object Storage"
 2. 需要绑定信用卡（扣 $0 验证，不产生费用）
 3. 点击 "Create bucket"，命名为 `blog-images`，地区选 `APAC`（亚太，国内更快）
 4. 进入 bucket → Settings → Public Access → 点击 "Allow Access"，获得公开访问域名（格式：`pub-xxx.r2.dev`）
 
-### 11.2 创建 API Token
+### 10.2 创建 API Token
 
 1. 进入 Cloudflare 右上角头像 → "My Profile" → "API Tokens"
 2. 点击 "Create Token" → "Create Custom Token"
@@ -555,7 +489,7 @@ const ap = new APlayer({
    - Account → R2 Storage → Edit
 4. 点击创建，**保存好 Token ID 和 Token Secret（只显示一次）**
 
-### 11.3 安装并配置 PicGo
+### 10.3 安装并配置 PicGo
 
 1. 下载 PicGo：https://github.com/Molunerfinn/PicGo/releases
    - macOS 下载 `.dmg` 文件
@@ -573,7 +507,7 @@ const ap = new APlayer({
 
 4. 设为默认图床，点击确认
 
-### 11.4 使用方式
+### 10.4 使用方式
 
 - 截图后直接 **Command+Shift+P** 呼出 PicGo 上传剪贴板图片
 - 或拖拽图片文件到 PicGo 窗口
@@ -581,16 +515,16 @@ const ap = new APlayer({
 
 ---
 
-## 十二、推送到 GitHub 并首次部署
+## 十一、推送到 GitHub 并首次部署
 
-### 12.1 在 GitHub 创建仓库
+### 11.1 在 GitHub 创建仓库
 
 1. 登录 GitHub，点击右上角 "+" → "New repository"
 2. **仓库名必须填写：`你的用户名.github.io`**（格式固定）
 3. 设置为 **Public（公开）**
 4. 不要勾选任何初始化选项，直接创建
 
-### 12.2 推送代码
+### 11.2 推送代码
 
 ```bash
 # 在项目根目录执行
@@ -600,18 +534,16 @@ git commit -m "初始化博客"
 git push -u origin main
 ```
 
-### 12.3 设置 GitHub Pages
+### 11.3 设置 GitHub Pages
 
 推送成功后：
 
 1. 进入仓库页面 → Settings → Pages
-2. Source 选择：**Deploy from a branch**
-3. Branch 选择：`gh-pages` / `/(root)`
-4. 点击 Save
+2. Source 选择：**GitHub Actions**
 
-⚠️ `gh-pages` 分支是第一次 GitHub Actions 运行成功后自动创建的。推送代码后等待 1-3 分钟，Actions 跑完后刷新 Settings → Pages 即可看到该分支。
+⚠️ 本方案通过 `actions/deploy-pages` 直接发布构建产物，不会创建 `gh-pages` 分支，Source 必须选 GitHub Actions 而不是 Deploy from a branch。
 
-### 12.4 验证部署
+### 11.4 验证部署
 
 - 进入仓库 → "Actions" 标签页，查看工作流运行状态
 - 绿色对勾 = 部署成功
@@ -619,11 +551,11 @@ git push -u origin main
 
 ---
 
-## 十三、日常写作工作流
+## 十二、日常写作工作流
 
 ```bash
-# 1. 新建文章
-hugo new post/文章标题/index.md
+# 1. 新建文章（放进对应栏目目录：tech / study / reading / life / enjoyment）
+hugo new post/tech/文章标题/index.md
 
 # 2. 用 VS Code 打开项目编写文章
 code .
@@ -643,7 +575,7 @@ git push
 
 ---
 
-## 十四、常见报错与解决方案
+## 十三、常见报错与解决方案
 
 | 报错现象 | 原因 | 解决方法 |
 |----------|------|----------|
@@ -652,13 +584,13 @@ git push
 | Actions 报错 template 错误 | 本地与 Actions 的 Hugo 版本不一致 | 修改 `deploy.yml` 中 `hugo-version` 与本地一致 |
 | `config.yaml` 修改后网站崩溃 | YAML 格式错误（缩进或冒号） | 用 VS Code YAML 插件检查，错误会实时标红 |
 | Giscus 评论框不显示 | 仓库非公开、未开启 Discussions、未安装 App | 按第八节步骤逐一检查 |
-| 音乐播放器不显示 | `head.html` 路径不对 | 确认文件在 `layouts/partials/custom/head.html` |
 | PicGo 上传失败 | R2 配置参数错误 | 检查 Endpoint 和 Bucket 名称是否正确 |
-| 首次推送后 Pages 看不到 gh-pages 分支 | Actions 还未跑完 | 等待 1-3 分钟后刷新 |
+| 推送后网站没更新 | Actions 还在运行或构建失败 | 到仓库 Actions 页查看运行日志 |
+| 自定义模板不生效 | 模板放在旧路径 `layouts/partials/` | Hugo 0.146+ 应放在 `layouts/_partials/` |
 
 ---
 
-## 十五、项目完整文件结构
+## 十四、项目完整文件结构
 
 ```
 你的用户名.github.io/
@@ -666,30 +598,34 @@ git push
 │   └── workflows/
 │       └── deploy.yml          # 自动部署配置
 ├── config.yaml                 # 主配置文件
+├── archetypes/                 # hugo new 模板（post / moments / page）
+├── assets/
+│   └── scss/
+│       └── custom.scss         # 全站配色与样式覆盖
 ├── content/
-│   ├── post/                   # 博客文章
-│   ├── gallery/                # 相册
-│   ├── shuoshuo/               # 说说
-│   ├── about/                  # 关于
-│   └── links/                  # 友情链接
-├── static/
-│   ├── img/
-│   │   └── avatar.png          # 头像
-│   ├── music/                  # 本地音频
-│   │   ├── song1.mp3
-│   │   └── cover.jpg
-│   └── favicon.ico
+│   ├── post/                   # 博客文章（tech / study / reading / life / enjoyment）
+│   ├── moments/                # 碎碎念
+│   └── page/                   # 独立页面（about / archives / friends / gallery / search）
+├── data/
+│   └── friends.yaml            # 友链数据
 ├── layouts/
-│   └── partials/
-│       └── custom/
-│           └── head.html       # 注入音乐播放器 + 统计代码
+│   ├── archives.html           # 归档页（年份时间轴）
+│   ├── _default/               # 标签索引页 + 单个标签页
+│   ├── moments/                # 碎碎念时间轴
+│   ├── page/                   # 友链、相册模板
+│   └── _partials/
+│       ├── head/custom.html    # 注入统计代码
+│       └── footer/custom.html  # 页脚全站统计
+├── static/
+│   ├── images/                 # favicon、头像
+│   └── index.html              # 自定义首页
 └── themes/
     └── hugo-theme-stack/       # 主题（submodule，不要手动修改）
 ```
 
 ---
 
-## 十六、参考资源
+## 十五、参考资源
 
 | 资源 | 地址 |
 |------|------|
@@ -697,7 +633,6 @@ git push
 | Stack 主题文档 | https://stack.jimmycai.com/ |
 | Stack 主题 GitHub | https://github.com/CaiJimmy/hugo-theme-stack |
 | Giscus 官网 | https://giscus.app |
-| APlayer 文档 | https://aplayer.js.org |
 | PicGo 下载 | https://github.com/Molunerfinn/PicGo/releases |
 | 不蒜子统计 | https://busuanzi.ibruce.info |
 | Cloudflare R2 文档 | https://developers.cloudflare.com/r2/ |
@@ -705,5 +640,5 @@ git push
 
 ---
 
-*文档版本：2.0 最终版 | 适用系统：macOS | 适用 Hugo 版本：0.120.0+ Extended*
-*用户条件：无自定义域名，使用 GitHub Pages 免费托管*
+*文档版本：3.0（2026-09 架构重构后同步：移除背景音乐，分类与标签合并为单一标签体系）*
+*适用系统：macOS | 适用 Hugo 版本：0.157.0+ Extended | 无自定义域名，使用 GitHub Pages 免费托管*

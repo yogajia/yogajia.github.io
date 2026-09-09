@@ -1,0 +1,24 @@
+{{ define "main" }}
+    <header class="taxonomy-intro">
+        <div class="taxonomy-kicker">INDEX / TOPICS</div>
+        <h1>标签</h1>
+        <p>用统一的关键词串起文章中的主题、方向与兴趣。</p>
+        <div class="taxonomy-summary">
+            <strong>{{ len .Pages }}</strong>
+            <span>个主题标签</span>
+        </div>
+    </header>
+
+    <div class="taxonomy-grid">
+        {{ range $index, $term := .Pages.ByTitle }}
+            <a class="taxonomy-card" href="{{ $term.RelPermalink }}">
+                <span class="taxonomy-card-index">{{ printf "%02d" (add $index 1) }}</span>
+                <span class="taxonomy-card-mark"></span>
+                <span class="taxonomy-card-name">{{ $term.Title }}</span>
+                <span class="taxonomy-card-count">{{ len $term.Pages }} 篇内容</span>
+            </a>
+        {{ end }}
+    </div>
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}
